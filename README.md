@@ -28,3 +28,5 @@
 ---
 
 *Work in Progress*: Cleaning up SQL scripts and their file structure to be more GitHub-friendly. Will add scripts as time permits.
+
+2014-07-14: Created all necessary SQL scripts prefixed with 3 digits to order them properly to build the full database. Will write a Python script to combine all files into one script to execute for a build.
