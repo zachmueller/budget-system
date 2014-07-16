@@ -1,6 +1,16 @@
 USE BudgetDB
 GO
 
+IF DATABASE_PRINCIPAL_ID('finance_analyst') IS NOT NULL
+	DROP ROLE finance_analyst
+GO
+
+IF DATABASE_PRINCIPAL_ID('fpa_analyst') IS NOT NULL
+	DROP ROLE fpa_analyst
+GO
+
+--------------------------------------------------
+
 --	database role for regular analysts who will read/write budget data
 CREATE ROLE finance_analyst AUTHORIZATION dbo;
 

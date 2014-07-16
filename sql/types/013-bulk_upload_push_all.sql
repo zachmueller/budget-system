@@ -64,9 +64,20 @@ CREATE TYPE dbo.bulk_upload_push_all AS TABLE (
 GO
 
 
-EXEC sys.sp_dropextendedproperty @name = N'MS_Description'
-	,@value = N'Table type used by Excel VBA to upload the forecast data from all three forecasting sheets'
+EXEC sys.sp_addextendedproperty @name = N'Documentation'
+	,@value = N'
+summary:	>
+			Table type used in the Excel VBA that uploads the 
+			forecast data from all three forecasting sheets,
+			using the dbo.bulk_upload_excel_push_all_updates
+			stored procedure.
+Revisions:
+- version 1:
+		Modification: Initial script for GitHub
+		Author: Zach Mueller
+		Date: 2014-07-15
+'
 	,@level0type = N'SCHEMA'
 	,@level0name = N'dbo'
 	,@level1type = N'TYPE'
-	,@level1name = N'bulk_upload_push_all'
+	,@level1name = N'bulk_upload_push_all';

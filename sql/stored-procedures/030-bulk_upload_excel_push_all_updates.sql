@@ -1,7 +1,6 @@
 USE BudgetDB
 GO
 
-
 IF OBJECT_ID('dbo.bulk_upload_excel_push_all_updates', 'P') IS NOT NULL
 	DROP PROCEDURE dbo.bulk_upload_excel_push_all_updates
 GO
@@ -9,10 +8,20 @@ GO
 
 CREATE PROCEDURE dbo.bulk_upload_excel_push_all_updates
 	@tbl bulk_upload_push_all READONLY
-	,@wbID INT
+	,@wbID INT	--	workbook ID
 AS
 /*
-
+summary:	>
+			Takes data from all three forecasting tabs (Expenses,
+			Revenue, Headcount) in the Excel templates and
+			applies necessary changes to the dbo.live_forecast
+			table to reflect that workbook's most current
+			forecast expectations.
+Revisions:
+- version 1:
+		Modification: Initial script for GitHub
+		Author: Zach Mueller
+		Date: 2014-07-15
 */
 
 --	suppress counts and warnings from interfering with upload
@@ -43,7 +52,7 @@ CREATE TABLE #TempErrors (
 
 INSERT INTO #TempErrors (dimension, item_name, error_type)
 SELECT dim, item, er
-FROM (
+FROM (--	look for invalid or inactive dimensions
 	SELECT 'Company' dim, t.company_name item, 'Invalid' er
 	FROM @tbl t
 	LEFT JOIN BudgetDB.dbo.companies cp ON cp.company_name=t.company_name
@@ -203,8 +212,10 @@ FROM (
 	WHERE cr.currency_code IS NULL AND t.currency_code IS NOT NULL
 ) a
 
+--	if any errors exist, select them out to user and stop upload
 IF (SELECT COUNT(*) FROM #TempErrors) > 0 
 BEGIN
+	--	only select a few records (to fit inside Excel VBA MsgBox)
 	SELECT TOP 20 er
 	FROM (
 		SELECT 1 ob, 'Errors exist in the upload data:' + CHAR(13)+CHAR(10) er
@@ -320,6 +331,8 @@ WHERE t.record_type IN ('Headcount','Revenue','Expenses')
 DELETE cap
 FROM BudgetDB.dbo.calculation_table_cap_rates cap
 JOIN (
+	--	find live_forecast data where excel sheet/row is
+	--		missing from the new upload
 	SELECT lf.id
 	FROM BudgetDB.dbo.live_forecast lf
 	LEFT JOIN (
@@ -344,15 +357,17 @@ WHERE lf.workbook_id=@wbID
 AND t.excel_row IS NULL
 
 
-
+--	merge cleaned up temp table with live_forecast
+--		to apply remaining changes (insert, update)
 MERGE BudgetDB.dbo.live_forecast lf
 USING #TempMain t
 ON t.workbook_id=lf.workbook_id AND t.sheet_name=lf.sheet_name
 AND t.excel_row=lf.excel_row
 WHEN MATCHED THEN
-	UPDATE SET lf.scenario_id=t.scenario_id,lf.company_number=t.company_number,lf.bu_number=t.bu_number,lf.dept_number=t.dept_number
-		,lf.hfm_team_code=t.hfm_team_code,lf.hfm_product_code=t.hfm_product_code
-		,lf.location_number=t.location_number,lf.job_id=t.job_id,lf.hfm_account_code=t.hfm_account_code
+	UPDATE SET lf.scenario_id=t.scenario_id,lf.company_number=t.company_number
+		,lf.bu_number=t.bu_number,lf.dept_number=t.dept_number,lf.hfm_team_code=t.hfm_team_code
+		,lf.hfm_product_code=t.hfm_product_code,lf.location_number=t.location_number
+		,lf.job_id=t.job_id,lf.hfm_account_code=t.hfm_account_code
 		,lf.[Month 1]=t.[Month 1],lf.[Month 2]=t.[Month 2],lf.[Month 3]=t.[Month 3]
 		,lf.[Month 4]=t.[Month 4],lf.[Month 5]=t.[Month 5],lf.[Month 6]=t.[Month 6]
 		,lf.[Month 7]=t.[Month 7],lf.[Month 8]=t.[Month 8],lf.[Month 9]=t.[Month 9]
@@ -392,6 +407,7 @@ OUTPUT $action, t.sheet_name, t.excel_row, inserted.id INTO #TempOut;
 ---------------------------------
 --	Cap Rates
 --	select live_forecast ID value for each Headcount record
+--		(basically map upload table cap rate records to new live_forecast records)
 SELECT lf.id, lf.sheet_name, lf.excel_row
 INTO #TempCap
 FROM @tbl t
@@ -401,6 +417,7 @@ AND lf.sheet_name=t.sheet_name
 AND lf.excel_row=t.excel_row
 AND t.record_type='Headcount'
 
+--	merge in updates to cap rate table
 MERGE BudgetDB.dbo.calculation_table_cap_rates cap
 USING (
 	SELECT tm.id, t.sheet_name, t.excel_row, @wbID workbook_id
@@ -411,9 +428,11 @@ USING (
 		,[Month 25],[Month 26],[Month 27],[Month 28],[Month 29],[Month 30]
 		,[Month 31],[Month 32],[Month 33],[Month 34],[Month 35],[Month 36]
 	FROM @tbl t
+	--	join on newly mapped IDs
 	LEFT JOIN #TempCap tm
 	ON tm.sheet_name=t.sheet_name
 	AND tm.excel_row=t.excel_row
+	--	cap rate records only
 	WHERE t.record_type='Cap Rate'
 ) t
 ON t.id=cap.id
@@ -466,6 +485,7 @@ CREATE TABLE #Temp (
 	,[Month 34] DECIMAL(20,18) DEFAULT 1,[Month 35] DECIMAL(20,18) DEFAULT 1,[Month 36] DECIMAL(20,18) DEFAULT 1
 )
 
+--	extract only commission attainment records
 INSERT INTO #Temp ([Month 1],[Month 2],[Month 3],[Month 4]
 	,[Month 5],[Month 6],[Month 7],[Month 8],[Month 9],[Month 10],[Month 11],[Month 12],[Month 13],[Month 14]
 	,[Month 15],[Month 16],[Month 17],[Month 18],[Month 19],[Month 20],[Month 21],[Month 22],[Month 23]
@@ -527,13 +547,3 @@ SELECT 'Failure to update database:' + CHAR(13)+CHAR(10)
 END CATCH
 
 GO
-
-
-
-EXEC sys.sp_dropextendedproperty @name = N'MS_Description'
-	,@value = N'Stored procedure used by Excel VBA to upload all forecast '
-		+ N'data from a workbook at once and updating the database tables as necessary'
-	,@level0type = N'SCHEMA'
-	,@level0name = N'dbo'
-	,@level1type = N'PROCEDURE'
-	,@level1name = N'bulk_upload_excel_push_all_updates'
