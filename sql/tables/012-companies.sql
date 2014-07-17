@@ -8,7 +8,7 @@ GO
 
 CREATE TABLE dbo.companies (
 	company_number NCHAR(3) NOT NULL,
-	company_name NVARCHAR(256) NOT NULL,
+	company_name NVARCHAR(256) NULL,
 	currency_code NCHAR(3) NOT NULL
 		CONSTRAINT fk_companies_currency_code FOREIGN KEY  
 		REFERENCES dbo.currencies (currency_code),
@@ -20,6 +20,12 @@ CREATE TABLE dbo.companies (
 	CONSTRAINT unq_companies_company_name
 		UNIQUE NONCLUSTERED (company_name)
 )
+GO
+
+
+CREATE UNIQUE NONCLUSTERED INDEX unq_companies_company_name
+ON dbo.companies (company_name)
+WHERE (company_name IS NOT NULL)
 GO
 
 
@@ -60,8 +66,8 @@ Revisions:
 	,@level0name = N'dbo'
 	,@level1type = N'TABLE'
 	,@level1name = N'companies'
-	,@level1type = N'COLUMN'
-	,@level1name = N'currency_code';
+	,@level2type = N'COLUMN'
+	,@level2name = N'currency_code';
 
 
 --------------------------------------------------------
@@ -83,5 +89,5 @@ Revisions:
 	,@level0name = N'dbo'
 	,@level1type = N'TABLE'
 	,@level1name = N'companies'
-	,@level1type = N'COLUMN'
-	,@level1name = N'us_0_intl_1';
+	,@level2type = N'COLUMN'
+	,@level2name = N'us_0_intl_1';

@@ -62,8 +62,8 @@ Revisions:
 	,@level0name = N'dbo'
 	,@level1type = N'TABLE'
 	,@level1name = N'business_units'
-	,@level1type = N'COLUMN'
-	,@level1name = N'bu_number';
+	,@level2type = N'COLUMN'
+	,@level2name = N'bu_number';
 
 
 --------------------------------------------------------
@@ -87,8 +87,8 @@ Revisions:
 	,@level0name = N'dbo'
 	,@level1type = N'TABLE'
 	,@level1name = N'business_units'
-	,@level1type = N'COLUMN'
-	,@level1name = N'us_0_intl_1';
+	,@level2type = N'COLUMN'
+	,@level2name = N'us_0_intl_1';
 
 
 --------------------------------------------------------
@@ -109,5 +109,5 @@ Revisions:
 	,@level0name = N'dbo'
 	,@level1type = N'TABLE'
 	,@level1name = N'business_units'
-	,@level1type = N'COLUMN'
-	,@level1name = N'hist_to_current_bu_mapping';
+	,@level2type = N'COLUMN'
+	,@level2name = N'hist_to_current_bu_mapping';
