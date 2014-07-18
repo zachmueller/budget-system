@@ -25,6 +25,12 @@
  - Double-click creation of Budget to Actual P&L views
  - Backup features allow for easy iteration of new features
 
+## Next Steps
+- Development towards further improvements has largely stopped, pending job hunting results. May nonetheless refactor main calculation procedure (dbo.output_live_converted) as it is overly complicated.
+- Continue cleaning up and documenting database scripts
+- Upload unlocked versions of Excel files (main template as well as Master Assumptions)
+- Potentially create a fully functional and publicly accessible dummy data set for anyone to test using the system
+
 ---
 
 *Work in Progress*: Cleaning up SQL scripts and their file structure to be more GitHub-friendly. Will add scripts as time permits.
