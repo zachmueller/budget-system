@@ -7,14 +7,30 @@ GO
 
 
 CREATE TABLE dbo.calculation_table_sbc (
-	scenario_id INT NOT NULL,
-	company_number NCHAR(3) NOT NULL,
-	bu_number NVARCHAR(100) NOT NULL,
-	dept_number NCHAR(4) NOT NULL,
-	hfm_team_code NVARCHAR(100) NOT NULL,
-	location_number NCHAR(3) NOT NULL,
-	hfm_account_code NVARCHAR(100) NOT NULL,
-	currency_code NCHAR(3) NOT NULL,
+	scenario_id INT NOT NULL
+		CONSTRAINT fk_calculation_table_sbc_scenario_id FOREIGN KEY
+		REFERENCES dbo.scenarios (scenario_id),
+	company_number NCHAR(3) NOT NULL
+		CONSTRAINT fk_calculation_table_sbc_company_number FOREIGN KEY
+		REFERENCES dbo.companies (company_number),
+	bu_number NVARCHAR(100) NOT NULL
+		CONSTRAINT fk_calculation_table_sbc_bu_number FOREIGN KEY
+		REFERENCES dbo.business_units (bu_number),
+	dept_number NCHAR(4) NOT NULL
+		CONSTRAINT fk_calculation_table_sbc_dept_number FOREIGN KEY
+		REFERENCES dbo.departments (dept_number),
+	hfm_team_code NVARCHAR(100) NOT NULL
+		CONSTRAINT fk_calculation_table_sbc_hfm_team_code FOREIGN KEY
+		REFERENCES dbo.teams (hfm_team_code),
+	location_number NCHAR(3) NOT NULL
+		CONSTRAINT fk_calculation_table_sbc_location_number FOREIGN KEY
+		REFERENCES dbo.locations (location_number),
+	hfm_account_code NVARCHAR(100) NOT NULL
+		CONSTRAINT fk_calculation_table_sbc_hfm_account_code FOREIGN KEY
+		REFERENCES dbo.pl_items (hfm_account_code),
+	currency_code NCHAR(3) NOT NULL
+		CONSTRAINT fk_calculation_table_sbc_currency_code FOREIGN KEY
+		REFERENCES dbo.currencies (currency_code),
 	[Month 1] DECIMAL(30, 16) NULL,
 	[Month 2] DECIMAL(30, 16) NULL,
 	[Month 3] DECIMAL(30, 16) NULL,
@@ -76,3 +92,24 @@ Revisions:
 	,@level0name = N'dbo'
 	,@level1type = N'TABLE'
 	,@level1name = N'calculation_table_sbc';
+
+
+--------------------------------------------------------
+EXEC sys.sp_addextendedproperty @name = N'Documentation'
+	,@value = N'
+summary:	>
+			The related dbo.pl_items.pl_item for which
+			each record''s output expense item will
+			be, generally a Stock Based Comp item.
+Revisions:
+- version 1:
+		Modification: Initial script for GitHub
+		Author: Zach Mueller
+		Date: 2014-07-20
+'
+	,@level0type = N'SCHEMA'
+	,@level0name = N'dbo'
+	,@level1type = N'TABLE'
+	,@level1name = N'calculation_table_sbc'
+	,@level2type = N'COLUMN'
+	,@level2name = N'hfm_account_code';
