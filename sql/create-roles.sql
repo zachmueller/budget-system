@@ -34,6 +34,10 @@ DENY EXECUTE ON OBJECT::dbo.log_add_table_entry TO finance_analyst, fpa_analyst;
 --	only regular finance analysts can push forecast/budget data
 GRANT EXECUTE ON OBJECT::dbo.bulk_upload_excel_push_all_updates TO finance_analyst;
 
+--	necessary for dbo.bulk_upload_excel_sbc sproc to be run by
+--		FP&A analysts as it uses a dynamic SQL insert
+GRANT INSERT ON OBJECT::dbo.calculation_table_sbc TO fpa_analyst;
+
 --	only FP&A analysts can update Master Assumptions, add/change dimensions, create scenarios, etc.
 GRANT EXECUTE ON OBJECT::dbo.bulk_upload_excel_base_bonus TO fpa_analyst;
 GRANT EXECUTE ON OBJECT::dbo.bulk_upload_excel_bonus_payout TO fpa_analyst;
