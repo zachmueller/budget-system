@@ -26,8 +26,11 @@
  - Backup features allow for easy iteration of new features
 
 ## Python Script
- - combine.py
- - Inputs: -i <input folder> -o <output file> -t <file type>
+ - Script name: [`combine.py`](https://github.com/zachmueller/budget-system/blob/master/combine.py)
+ - Inputs:
+  1. `-i` **-** Input folder
+  2. `-o` **-** Output file
+  3. `-t` **-** File type
  - Combines SQL script files together into one file, for easy database creation
  - Walks recursively through subfolders and their files
  - Example command line execution coming soon...
@@ -41,5 +44,3 @@
 ---
 
 *Work in Progress*: Cleaning up SQL scripts and their file structure to be more GitHub-friendly. Will add scripts as time permits.
-
-2014-07-14: Created all necessary SQL scripts prefixed with 3 digits to order them properly to build the full database. Will write a Python script to combine all files into one script to execute for a build.
