@@ -25,6 +25,13 @@
  - Double-click creation of Budget to Actual P&L views
  - Backup features allow for easy iteration of new features
 
+## Python Script
+ - combine.py
+ - Inputs: -i <input folder> -o <output file> -t <file type>
+ - Combines SQL script files together into one file, for easy database creation
+ - Walks recursively through subfolders and their files
+ - Example command line execution coming soon...
+
 ## Next Steps
 - Development towards further improvements has largely stopped, pending job hunting results. May nonetheless refactor main calculation procedure (dbo.output_live_converted) as it is overly complicated.
 - Continue cleaning up and documenting database scripts
