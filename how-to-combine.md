@@ -9,9 +9,8 @@
   - Python 3.4 installed with `python` command accessible via the system's PATH variable
 
 1. Move to `budget-system` parent directory
-```PowerShell
-cd C:\Users\zach\Documents\GitHub\budget-system
-```
+
+ `cd C:\Users\zach\Documents\GitHub\budget-system`
 
 2. Execute the `combine.py` script
  - `-i` is the Input Folder, where the script will recursively search for files

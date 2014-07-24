@@ -11,7 +11,7 @@ def main(argv):
 	help_text = """Description:
     Combines the text content of files in a directory and, recursively, its subdirectories
     into one output file. Only supports combining one file type at a time.
-	Requires Python 3.x (NOT compatible with Python 2.x)
+    Requires Python 3.x (NOT compatible with Python 2.x)
 
 Usage:
     combine.py [-h] | [-i <input_folder>] [-o <output_file>] [-t <file_type>]
