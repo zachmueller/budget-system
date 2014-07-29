@@ -21,6 +21,10 @@ Revisions:
 		Modification: Initial script for GitHub
 		Author: Zach Mueller
 		Date: 2014-07-22
+- version 2:
+		Modification: Added WHERE clause to filter out archived scenarios
+		Author: Zach Mueller
+		Date: 2014-07-28
 */
 
 SET NOCOUNT ON
@@ -32,6 +36,7 @@ BEGIN	--	include only US or INTL scenarios
 	FROM BudgetDB.dbo.scenarios
 	WHERE date_frozen IS NOT NULL
 	AND us_0_intl_1=@usIntl
+	AND archived_scenario=0
 END
 ELSE
 BEGIN	--	include only Consolidated scenarios
