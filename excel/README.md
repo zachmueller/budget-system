@@ -1,6 +1,6 @@
 # Template Files
 1. BG3 - Template.xlsm
-2. Master Assumptions.xlsm
+2. Master Assumptions - US.xlsm
 
 ---
 
@@ -11,6 +11,8 @@
 - Global variable, BudgetMacros module: set jeConnStr variable to connection string for Oracle database
 - Global variable, BudgetMacros module: set pwd variable to workbook password
 
-## Master Assumptions.xlsm
-- Controls system settings and main assumptions
-- *Uploading soon*
+## Master Assumptions - US.xlsm
+- Controls system settings and main forecast assumptions
+- Global variable, BudgetDB module: set connStr variable to connection string for Budget System database
+- Global variable, BudgetDB module: set pwd variable to workbook password
+- Recommended to lock workbook (when saving as, Tools -> General Options -> "Password to open") using same password as above
